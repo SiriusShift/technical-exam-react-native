@@ -27,7 +27,6 @@ type AuthProviderProps = {
 type registerProps = {
   email: string;
   password: string;
-  name: string;
 };
 
 type loginProps = {
@@ -72,27 +71,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(false);
   };
 
-  const register = async ({ email, password, name }: registerProps) => {
+  const register = async (token: string) => {
     setIsLoading(true);
     try {
-      // Call your API for registration
-      const response = await fetch("https://your-api.com/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, name }),
-      });
-
-      // Handle registration response
-      const data = await response.json();
-
-      if (data.token) {
-        // Auto-login after registration
-        setUserToken(data.token);
+      if (token) {
+        setUserToken(token);
         // setUserInfo(data.user);
-        await SecureStore.setItemAsync("userToken", data.token);
-        await SecureStore.setItemAsync("userInfo", JSON.stringify(data.user));
+
+        // Store authentication data securely
+        await SecureStore.setItemAsync("userToken", token);
+        router.replace("/(auth)/(tabs)");
+        // await SecureStore.setItemAsync("userInfo", JSON.stringify(data.user));
+      } else {
+        // Handle authentication error
+        console.log("Authentication failed");
       }
     } catch (error) {
       console.error("Registration error:", error);

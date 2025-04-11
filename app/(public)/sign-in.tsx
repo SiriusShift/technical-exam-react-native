@@ -2,11 +2,12 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { Controller, useForm } from "react-hook-form";
-import { loginSchema } from "@/schema/schema";
+import { formSchema } from "@/schema/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAuth } from "@/context/authContext";
 import { api } from "@/baseApi";
-import { useLoginMutation } from "@/features/authentication/loginApi";
+import { useLoginMutation } from "@/features/authentication/authApi";
+import { Link } from "expo-router";
 
 export default function SignIn() {
   const { login } = useAuth();
@@ -18,8 +19,8 @@ export default function SignIn() {
     formState: { isValid, errors },
   } = useForm({
     mode: "onChange",
-    resolver: yupResolver(loginSchema.schema),
-    defaultValues: loginSchema.defaultValues,
+    resolver: yupResolver(formSchema.schema),
+    defaultValues: formSchema.defaultValues,
   });
 
   const [loginTrigger, { isLoading }] = useLoginMutation();
@@ -92,6 +93,12 @@ export default function SignIn() {
         >
           Login
         </Button>
+        <Link
+          href="/(public)/sign-up"
+          style={{ textAlign: "center", marginTop: 10 }}
+        >
+          Don't have an account? Sign up here
+        </Link>
       </View>
     </View>
   );
